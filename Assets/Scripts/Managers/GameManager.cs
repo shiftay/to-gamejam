@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour {
 
 	private GameManager instance;
 	public GameManager Instance() { return instance; }
-
+	const string path = "roster";
 	public bool DEBUGGING;
 	public bool firstRun = true;
 	private Options options;
@@ -33,7 +33,11 @@ public class GameManager : MonoBehaviour {
 			current_mission = GetComponent<Current_Mission>();
 			acct_info = GetComponent<Account_Info>();
 
+			UnitRoster ur = UnitRoster.Load(path);
 
+			foreach(Unit unit in ur.units) {
+				print(unit.name);
+			}
 
 			//acct_info.initInfo();
 			//TODO: Load in any XML files for options / anything.
@@ -49,6 +53,8 @@ public class GameManager : MonoBehaviour {
 	void ReadAccount() {
 		// read acct info
 	}
+
+	
 
 	//TODO: before quitting run a write to xml;
 	public void SaveInfo() {

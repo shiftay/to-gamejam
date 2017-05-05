@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<UnitRoster>
+	<Units>
+		<Unit name="solider">
+			<Damage>10</Damage>
+			<Health>20</Health>
+			<Movement>3</Movement>
+			<Rarity>Common</Rarity>
+		</Unit>
+	</Units>
+</UnitRoster>
