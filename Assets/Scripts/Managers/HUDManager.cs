@@ -18,7 +18,7 @@ public class HUDManager : MonoBehaviour
 	public Slider SoundSlider;
 	public GameObject Exit;
 	public GameObject ShopText;
-	public Image[] Rosters;
+	//public Image[] Rosters;
 	private GameManager gm;
 
 	void Start () 
@@ -26,9 +26,9 @@ public class HUDManager : MonoBehaviour
 		gm = GameManager.Instance();
 
 		//Pass the options value to GameManager 
-		gm.CURR_options.music_volume = (int)MusicSlider.value;
-		gm.CURR_options.sfx_volume = (int)SoundSlider.value;
-		gm.CURR_options.isAnimated = AnimToggle.gameObject.GetComponent<Toggle>().isOn;
+		MusicSlider.value = gm.CURR_options.music_volume;
+		SoundSlider.value = gm.CURR_options.sfx_volume;
+		AnimToggle.gameObject.GetComponent<Toggle>().isOn = gm.CURR_options.isAnimated;
 
 		//Set popup background for menu to semi-transparent
 		Popup.color = new Color(Popup.color.r, Popup.color.g, Popup.color.b, 0.75f);
@@ -39,9 +39,9 @@ public class HUDManager : MonoBehaviour
 		AnimText.SetActive(false);
 		AnimToggle.SetActive(false);
 		MusicText.SetActive(false);
-		MusicSlider.enabled = false;
+		MusicSlider.gameObject.SetActive(false);
 		SoundText.SetActive(false);
-		SoundSlider.enabled = false;
+		SoundSlider.gameObject.SetActive(false);
 		Exit.SetActive(false);
 		ShopText.SetActive(false);
 		// Rosters[0].enabled = false;
@@ -61,12 +61,12 @@ public class HUDManager : MonoBehaviour
 		//When pressed activate roster stuff
 		Popup.enabled = true;
 		Back.SetActive(true);
-		Rosters[0].enabled = true;
-		Rosters[1].enabled = true;
-		Rosters[2].enabled = true;
-		Rosters[3].enabled = true;
-		Rosters[4].enabled = true;
-		Rosters[5].enabled = true;
+		// Rosters[0].enabled = true;
+		// Rosters[1].enabled = true;
+		// Rosters[2].enabled = true;
+		// Rosters[3].enabled = true;
+		// Rosters[4].enabled = true;
+		// Rosters[5].enabled = true;
 	}
 
 	public void onShop()
@@ -93,9 +93,9 @@ public class HUDManager : MonoBehaviour
 		AnimText.SetActive(true);
 		AnimToggle.SetActive(true);
 		MusicText.SetActive(true);
-		MusicSlider.enabled = false;
+		MusicSlider.gameObject.SetActive(true);
 		SoundText.SetActive(true);
-		SoundSlider.enabled = false;
+		SoundSlider.gameObject.SetActive(true);
 		Exit.SetActive(true);
 	}	
 
@@ -105,12 +105,12 @@ public class HUDManager : MonoBehaviour
 		Popup.enabled = false;
 
 		//ROSTER STUFF
-		Rosters[0].enabled = false;
-		Rosters[1].enabled = false;
-		Rosters[2].enabled = false;
-		Rosters[3].enabled = false;
-		Rosters[4].enabled = false;
-		Rosters[5].enabled = false;
+		// Rosters[0].enabled = false;
+		// Rosters[1].enabled = false;
+		// Rosters[2].enabled = false;
+		// Rosters[3].enabled = false;
+		// Rosters[4].enabled = false;
+		// Rosters[5].enabled = false;
 		Shop.SetActive(true);
 		Options.SetActive(true);
 
@@ -123,9 +123,9 @@ public class HUDManager : MonoBehaviour
 		AnimText.SetActive(false);
 		AnimToggle.SetActive(false);
 		MusicText.SetActive(false);
-		MusicSlider.enabled = false;
+		MusicSlider.gameObject.SetActive(false);
 		SoundText.SetActive(false);
-		SoundSlider.enabled = false;
+		SoundSlider.gameObject.SetActive(false);
 		Exit.SetActive(false);
 	}
 }
