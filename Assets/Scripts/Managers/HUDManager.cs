@@ -128,4 +128,21 @@ public class HUDManager : MonoBehaviour
 		SoundSlider.gameObject.SetActive(false);
 		Exit.SetActive(false);
 	}
+
+	public void MusicValueChanger()
+	{
+		 gm.CURR_options.music_volume = MusicSlider.value;
+	}
+
+	public void SFXValuechanger()
+	{
+		gm.CURR_options.sfx_volume = SoundSlider.value;
+	}
+
+	public void AnimationToggler()
+	{
+		//isOn is weird. As soon as boolean becomes true, it cannot be fipped anymore. Stays true.
+		gm.CURR_options.isAnimated = AnimToggle.gameObject.GetComponent<Toggle>().isOn;
+		Debug.Log(gm.CURR_options.isAnimated);
+	}
 }
