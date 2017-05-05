@@ -54,6 +54,4 @@ public class GameManager : MonoBehaviour {
 	public void SaveInfo() {
 		// saves all information to xml
 	}
-
-
 }
