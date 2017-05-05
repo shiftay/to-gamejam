@@ -39,18 +39,14 @@ public class GameManager : MonoBehaviour {
 			current_mission = GetComponent<Current_Mission>();
 			acct_info = GetComponent<Account_Info>();
 
-
-
 			// Can be used to save the entire roster of dudes.
 			roster = UnitRoster.Load();
 			options = OptionContainer.Load();
 			ReadOptions();
-			// foreach(Unit unit in ur.units) {
-			// 	print(unit.name);
-			// }
 
+			// sets account info
+			acct_info.LoadInfo();
 			//acct_info.initInfo();
-			//TODO: Load in any XML files for options / anything.
 
 			firstRun = false;
 		}
@@ -61,12 +57,6 @@ public class GameManager : MonoBehaviour {
 		CURR_options.sfx_volume = options.options[0].GetSFX();
 		CURR_options.music_volume = options.options[0].GetMUSIC();
 	}
-
-	void ReadAccount() {
-		// read acct information
-	}
-
-	
 
 	//TODO: before quitting run a write to xml;
 	public void SaveInfo() {

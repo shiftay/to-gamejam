@@ -2,9 +2,9 @@
 <OptionsContainer>
 <Options>
 	<Option>
-		<Animation>true</Animation>
+		<Animations>true</Animations>
 		<SFXVol>5</SFXVol>
-		<MusicVol>5</MusicVol>
+		<MUSICVol>5</MUSICVol>
 	</Option>
 </Options>
 </OptionsContainer>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<UnitRoster>
+	<Units>
+		<Unit name="solider">
+			<Damage>10</Damage>
+			<Health>20</Health>
+			<Movement>3</Movement>
+			<Rarity>Common</Rarity>
+		</Unit>
+		<Unit name="Tank">
+			<Damage>50</Damage>
+			<Health>100</Health>
+			<Movement>1</Movement>
+			<Rarity>Epic</Rarity>
+		</Unit>
+	</Units>
+</UnitRoster>

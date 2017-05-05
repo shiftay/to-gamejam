@@ -26,11 +26,12 @@ public class OptionContainer {
 	}
 
 	public static void Write(OptionContainer holder) {
-		
-
 		XmlSerializer serializer = new XmlSerializer(typeof(OptionContainer));
+
 		FileStream stream = new FileStream(path, FileMode.Create);
+		
 		serializer.Serialize(stream, holder);
+		
 		stream.Close();
 	}
 }
