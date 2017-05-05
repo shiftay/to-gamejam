@@ -134,7 +134,7 @@ public class HUDManager : MonoBehaviour
 		 gm.CURR_options.music_volume = MusicSlider.value;
 	}
 
-	public void SFXValuechanger()
+	public void SFXValueChanger()
 	{
 		gm.CURR_options.sfx_volume = SoundSlider.value;
 	}
