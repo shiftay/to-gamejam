@@ -23,9 +23,11 @@ public class HUDManager : MonoBehaviour
 
 	void Start () 
 	{
+		gm = GameManager.Instance();
+
 		//Pass the options value to GameManager 
-		gm.CURR_options.music_volume = MusicSlider.value;
-		gm.CURR_options.sfx_volume = SoundSlider.value;
+		gm.CURR_options.music_volume = (int)MusicSlider.value;
+		gm.CURR_options.sfx_volume = (int)SoundSlider.value;
 		gm.CURR_options.isAnimated = AnimToggle.gameObject.GetComponent<Toggle>().isOn;
 
 		//Set popup background for menu to semi-transparent
@@ -42,12 +44,12 @@ public class HUDManager : MonoBehaviour
 		SoundSlider.enabled = false;
 		Exit.SetActive(false);
 		ShopText.SetActive(false);
-		Rosters[0].enabled = false;
-		Rosters[1].enabled = false;
-		Rosters[2].enabled = false;
-		Rosters[3].enabled = false;
-		Rosters[4].enabled = false;
-		Rosters[5].enabled = false;
+		// Rosters[0].enabled = false;
+		// Rosters[1].enabled = false;
+		// Rosters[2].enabled = false;
+		// Rosters[3].enabled = false;
+		// Rosters[4].enabled = false;
+		// Rosters[5].enabled = false;
 	}
 
 	public void onRoster()

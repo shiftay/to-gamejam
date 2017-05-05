@@ -13,10 +13,10 @@ public class Options {
 	public int GetSFX() { return sfx_volume; }
 	public int GetMUSIC() { return music_volume; }
 
-	Options(bool isAnimated, int sfx, int music) {
-		this.isAnimated = isAnimated;
-		sfx_volume = sfx;
-		music_volume = music;
-	}
+	// Options(bool isAnimated, int sfx, int music) {
+	// 	this.isAnimated = isAnimated;
+	// 	sfx_volume = sfx;
+	// 	music_volume = music;
+	// }
 
 }

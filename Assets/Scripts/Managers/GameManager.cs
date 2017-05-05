@@ -11,8 +11,8 @@ public class GameManager : MonoBehaviour {
 		public bool isAnimated;
 	}
 
-	private GameManager instance;
-	public GameManager Instance() { return instance; }
+	private static GameManager instance;
+	public static GameManager Instance() { return instance; }
 	public bool DEBUGGING;
 	public bool firstRun = true;
 	private Current_Mission current_mission;
