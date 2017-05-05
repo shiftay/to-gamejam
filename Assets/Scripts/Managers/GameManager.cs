@@ -6,8 +6,8 @@ public class GameManager : MonoBehaviour {
 
 
 	public struct option_hldr {
-		public int sfx_volume;
-		public int music_volume;
+		public float sfx_volume;
+		public float music_volume;
 		public bool isAnimated;
 	}
 
