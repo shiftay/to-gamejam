@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 
@@ -11,8 +10,9 @@ public class UnitRoster {
 	[XmlArrayItemAttribute("Unit")]
 	public List<Unit> units = new List<Unit>();
 
+	const string path = "roster";
 
-	public static UnitRoster Load(string path){
+	public static UnitRoster Load(){
 		TextAsset xml = Resources.Load<TextAsset>(path);
 
 		XmlSerializer serializer = new XmlSerializer(typeof(UnitRoster));

@@ -8,8 +8,8 @@ public class Unit {
 	public int damage;
 	[XmlElement("Health")]
 	public int health;
-	// [XmlElement("Movement")]
-	// public int movement;
-	// [XmlElement("Rarity")]
-	// public string rarity;
+	[XmlElement("Movement")]
+	public int movement;
+	[XmlElement("Rarity")]
+	public string rarity;
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<OptionsContainer>
+<Options>
+	<Option>
+		<Animation>true</Animation>
+		<SFXVol>5</SFXVol>
+		<MusicVol>5</MusicVol>
+	</Option>
+</Options>
+</OptionsContainer>

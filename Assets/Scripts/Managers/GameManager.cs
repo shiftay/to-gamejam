@@ -4,17 +4,24 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 
+
+	public struct option_hldr {
+		public int sfx_volume;
+		public int music_volume;
+		public bool isAnimated;
+	}
+
 	private GameManager instance;
 	public GameManager Instance() { return instance; }
-	const string path = "roster";
 	public bool DEBUGGING;
 	public bool firstRun = true;
-	private Options options;
 	private Current_Mission current_mission;
 	private Account_Info acct_info;
-
+	private UnitRoster roster;
+	private OptionContainer options;
 	public Current_Mission current() { return current_mission; }
-
+	public option_hldr CURR_options;
+	
 	// Use this for initialization
 	void Start () {
 		if (instance == null)
@@ -29,15 +36,18 @@ public class GameManager : MonoBehaviour {
 		}
 
 		if(firstRun) {
-			options = GetComponent<Options>();
 			current_mission = GetComponent<Current_Mission>();
 			acct_info = GetComponent<Account_Info>();
 
-			UnitRoster ur = UnitRoster.Load(path);
 
-			foreach(Unit unit in ur.units) {
-				print(unit.name);
-			}
+
+			// Can be used to save the entire roster of dudes.
+			roster = UnitRoster.Load();
+			options = OptionContainer.Load();
+			ReadOptions();
+			// foreach(Unit unit in ur.units) {
+			// 	print(unit.name);
+			// }
 
 			//acct_info.initInfo();
 			//TODO: Load in any XML files for options / anything.
@@ -47,11 +57,13 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	void ReadOptions() {
-		// read options info
+		CURR_options.isAnimated = options.options[0].GetAnim();
+		CURR_options.sfx_volume = options.options[0].GetSFX();
+		CURR_options.music_volume = options.options[0].GetMUSIC();
 	}
 
 	void ReadAccount() {
-		// read acct info
+		// read acct information
 	}
 
 	
@@ -59,5 +71,8 @@ public class GameManager : MonoBehaviour {
 	//TODO: before quitting run a write to xml;
 	public void SaveInfo() {
 		// saves all information to xml
+		OptionContainer.Write(options);
 	}
+
+
 }
