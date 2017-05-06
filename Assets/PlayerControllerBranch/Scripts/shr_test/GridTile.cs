@@ -41,6 +41,7 @@ public class GridTile : MonoBehaviour {
 			} else {
 				if(type == "atk") {
 					Debug.Log("can attack");
+					lm.ProcessAttack(x,y);
 				}
 			}
 		}

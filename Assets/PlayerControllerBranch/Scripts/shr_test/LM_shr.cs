@@ -19,6 +19,7 @@ public class LM_shr : MonoBehaviour {
 	const int ENEMYID = 560;
 
 	public List<Fighter> curr_hero = new List<Fighter>();
+	public List<Fighter> curr_enemy = new List<Fighter>();
 	public Fighter[] heroes;
 
 	public Fighter[] enemies;
@@ -78,7 +79,8 @@ public class LM_shr : MonoBehaviour {
 			int x = Random.Range(0,5);
 			int y = Random.Range(0,5);
 			// change to hero setup.
-			Instantiate(enemies[j], new Vector3(x, y, -2), Quaternion.identity).setOwnership("enemy", ENEMYID + j, this, x, y);
+			curr_enemy.Add(Instantiate(enemies[j], new Vector3(x, y, -2), Quaternion.identity));
+			curr_enemy[j].setOwnership("enemy", ENEMYID + j, this, x, y);
 			grid[x,y] = ENEMYID + j;
 		}
 	}
@@ -199,6 +201,38 @@ public class LM_shr : MonoBehaviour {
 		return true;
 	}
 
+	public void ProcessAttack(int x, int y) {
+		if(playersTurn) {
+			//player attack.
+			int selectedHero = 0;
+			int selectedEnemy = 0;
+			int enemyToAtk = grid[x,y];
+			
+
+			for(int i = 0; i < curr_hero.Count; i++) {
+				if(curr_hero[i].UID() == curr_Unit.uniqueID){
+					selectedHero = i;
+					break;
+				}
+			}
+
+
+			for(int j = 0; j < curr_enemy.Count; j++) {
+				if(curr_enemy[j].UID() == enemyToAtk) {
+					selectedEnemy = j;
+				}
+			}
+
+			Debug.Log("HEALTH:" + curr_enemy[selectedEnemy].getStats().health);
+			curr_enemy[selectedEnemy].TakeDamage(curr_hero[selectedHero].getStats().damage);
+			Debug.Log("HEALTH:" + curr_enemy[selectedEnemy].getStats().health);
+			
+			//TODO Animations
+			curr_hero[selectedHero].setAttacked(true);
+			DeleteATK();
+
+		}
+	}
 
 	public bool CheckValid(int x, int y) {
 		if(grid[x,y] > 0){
@@ -260,7 +294,33 @@ public class LM_shr : MonoBehaviour {
 				playersTurn = false;
 			}
 		}
+		// SURRENDER ENDS GAME
 		// END TURN BUTTON WILL SET ALL UNITS TO EXHAUSTED
 		// check if game over.
+		CheckGameOver();
+	}
+
+	void CheckGameOver() {
+		int enemiesDead = 0;
+		int heroesDead = 0;
+		for(int i = 0; i < curr_enemy.Count; i++) {
+			if(!curr_enemy[i].isAlive()){
+				enemiesDead++;
+			}
+		}
+		for(int j = 0; j < curr_hero.Count; j++) {
+			if(!curr_hero[j].isAlive()){
+				heroesDead++;
+			}
+		}
+
+		if(enemiesDead == curr_enemy.Count){
+			Debug.Log("Player wins!");
+		}
+
+		if(heroesDead == curr_hero.Count){
+			Debug.Log("Enemy wins!");
+		}
+
 	}
 }
