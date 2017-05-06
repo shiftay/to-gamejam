@@ -5,18 +5,15 @@ using UnityEngine;
 public class Knight : MonoBehaviour {
 
 	private CharStats stats;
-	private bool isPicked;
+	public bool isPicked;
 	
-
-	void Start(){
+	void Awake(){
 		stats = GetComponent<CharStats>();
 		stats.setMaxHealth(100);
 		stats.setMaxMagic(30);
 		stats.setSpeed(1);
 		stats.setdoneMoving(false);
-		isPicked = false;
-		
-		
+		isPicked = false;	
 	}
 	
 	void Update () {
@@ -26,13 +23,6 @@ public class Knight : MonoBehaviour {
 			notSelected();
 		}
 	}
-	void OnMouseDown(){
-		// for(int i = 0; i < 1; i++){
-		// 	otherUnits[0].GetComponent<Archer>().currentUnit = false;
-		// }
-		// currentUnit = true;
-	}
-
 	void isSelected(){
 			transform.GetChild (0).gameObject.SetActive(true);
 			transform.GetChild (1).gameObject.SetActive(true);
@@ -46,8 +36,7 @@ public class Knight : MonoBehaviour {
 			transform.GetChild (3).gameObject.SetActive(false);
 	}
 
-	public bool Picked(bool change){
-		isPicked = change;
-		return isPicked;
+	public void Picked(){
+		isPicked = true;
 	}
 }

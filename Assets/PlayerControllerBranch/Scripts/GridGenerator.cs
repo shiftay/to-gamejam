@@ -35,6 +35,6 @@ public class GridGenerator : MonoBehaviour {
 		}
 	}
 	void SpawnUnits(){
-		Instantiate(knight,tiles.transform.position,Quaternion.identity);
+		Instantiate(knight,GameObject.Find("Board Holder").transform.GetChild(0).gameObject.transform.position,Quaternion.identity);
 	}
 }
