@@ -31,6 +31,7 @@ public class LM_shr : MonoBehaviour {
 	public tileTypes[] list;
 	public GameObject moveRange;
 	GameObject holder;
+	public GameObject atkRange;
 	public int[,]  grid;
 	public currentSelectedUnit curr_Unit; // can be made private.
 
@@ -41,6 +42,8 @@ public class LM_shr : MonoBehaviour {
 		holder.name = "Grid";
 		moveRange = new GameObject();
 		moveRange.name = "MoveRange";
+		atkRange = new GameObject();
+		atkRange.name = "atkRange";
 		// Instantiate(holder);
 		GenerateGrid();
 		CreateGrid();
@@ -67,7 +70,7 @@ public class LM_shr : MonoBehaviour {
 		for(int i = 0; i < heroes.Length; i++){
 			int x = Random.Range(0,5);
 			int y = Random.Range(0,5);
-			curr_hero.Add(Instantiate(heroes[i], new Vector3(x, y, -1), Quaternion.identity));
+			curr_hero.Add(Instantiate(heroes[i], new Vector3(x, y, -2), Quaternion.identity));
 			curr_hero[i].setOwnership("player", PLAYERID + i, this, x, y);
 			grid[x,y] = PLAYERID + i;
 		}
@@ -75,7 +78,7 @@ public class LM_shr : MonoBehaviour {
 			int x = Random.Range(0,5);
 			int y = Random.Range(0,5);
 			// change to hero setup.
-			Instantiate(enemies[j], new Vector3(x, y, -1), Quaternion.identity).setOwnership("enemy", ENEMYID + j, this, x, y);
+			Instantiate(enemies[j], new Vector3(x, y, -2), Quaternion.identity).setOwnership("enemy", ENEMYID + j, this, x, y);
 			grid[x,y] = ENEMYID + j;
 		}
 	}
@@ -105,7 +108,7 @@ public class LM_shr : MonoBehaviour {
 	}
 
 
-	public void GatherMovement(int[,] grid, int UID, int range) {
+	public void GatherMovement(int UID, int range) {
 		int x = width;
 		int y = height;
 
@@ -119,22 +122,55 @@ public class LM_shr : MonoBehaviour {
 		}
 
 		for(int m = 1; m < range+1; m++) {
-			CreateMoveBlock(x+m,y);
-			CreateMoveBlock(x-m,y);
-			CreateMoveBlock(x,y+m);
-			CreateMoveBlock(x,y-m);
+			CreateBlock(x+m,y,1,"move");
+			CreateBlock(x-m,y,1,"move");
+			CreateBlock(x,y+m,1,"move");
+			CreateBlock(x,y-m,1,"move");
 		}
 
 		for (int n = 1; n <= range; n++) {	
 			for(int z = -range+n; z < range-n; z++) {
-				CreateMoveBlock(x+n,y+z);
-				CreateMoveBlock(x-n,y-z);
-				CreateMoveBlock(x-z,y+n);
-				CreateMoveBlock(x+z,y-n);
+				CreateBlock(x+n,y+z,1,"move");
+				CreateBlock(x-n,y-z,1,"move");
+				CreateBlock(x-z,y+n,1,"move");
+				CreateBlock(x+z,y-n,1,"move");
 			}
 		}
 	
 	}
+
+
+	public void GatherATKRange(int UID, int range) {
+		int x = width;
+		int y = height;
+
+		for(int i = 0; i < width; i++) {
+			for(int j = 0; j < height; j++) {
+				if(grid[i,j] == UID){
+					x = i;
+					y = j;
+				}
+			}
+		}
+
+		for(int m = 1; m < range+1; m++) {
+			CreateBlock(x+m,y,2,"atk");
+			CreateBlock(x-m,y,2,"atk");
+			CreateBlock(x,y+m,2,"atk");
+			CreateBlock(x,y-m,2,"atk");
+		}
+
+		for (int n = 1; n <= range; n++) {	
+			for(int z = -range+n; z < range-n; z++) {
+				CreateBlock(x+n,y+z,2,"atk");
+				CreateBlock(x-n,y-z,2,"atk");
+				CreateBlock(x-z,y+n,2,"atk");
+				CreateBlock(x+z,y-n,2,"atk");
+			}
+		}
+	}
+
+
 
 	// already checked if valid movement
 	public bool MoveUnit(int x, int y) {
@@ -155,9 +191,11 @@ public class LM_shr : MonoBehaviour {
 		grid[curr_hero[selectedUnit].Curr_pos().x, curr_hero[selectedUnit].Curr_pos().y] = 0;
 		grid[x,y] = curr_hero[selectedUnit].UID();
 		curr_hero[selectedUnit].setExhausted(true);
-		curr_hero[selectedUnit].setSelected(false);
+		// curr_hero[selectedUnit].setSelected(false);
 		curr_Unit.fighter.transform.position = new Vector3(x, y, -1);
 		DeleteMovement();
+		DeleteATK();
+		GatherATKRange(curr_hero[selectedUnit].UID(), curr_hero[selectedUnit].getStats().atkrange); // change to range through fighter.
 		return true;
 	}
 
@@ -170,19 +208,37 @@ public class LM_shr : MonoBehaviour {
 		}
 	}
 
-	void CreateMoveBlock(int x, int y) {
+	void CreateBlock(int x, int y, int type, string tileType) {
 		if(x > width || x < 0 || y < 0 || y > height){
 			return;
 		}
+		
+		int tile = 0;
+		if(tileType == "atk"){
+			tile = -1;
+		}
 
-		GameObject go = Instantiate(list[1].tilePrefab, new Vector2(x, y), Quaternion.identity);
-		go.GetComponent<GridTile>().init(x, y, this, "move");
-		SetParent(moveRange, go);
+
+		GameObject go = Instantiate(list[type].tilePrefab, new Vector3(x, y, tile), Quaternion.identity);
+		go.GetComponent<GridTile>().init(x, y, this, tileType);
+		if(tileType == "move") {
+			SetParent(moveRange, go);
+		} else {
+			SetParent(atkRange, go);
+		}
 	}
 
 	public void DeleteMovement() {
 		List<GameObject> children = new List<GameObject>();
 		foreach(Transform child in moveRange.transform) {
+			children.Add(child.gameObject);
+		}
+		children.ForEach(child => Destroy(child));
+	}
+
+	public void DeleteATK() {
+		List<GameObject> children = new List<GameObject>();
+		foreach(Transform child in atkRange.transform) {
 			children.Add(child.gameObject);
 		}
 		children.ForEach(child => Destroy(child));
@@ -194,7 +250,7 @@ public class LM_shr : MonoBehaviour {
 		if(playersTurn) {
 			int amountExhausted = 0;
 			for(int i = 0; i < curr_hero.Count; i++) {
-				if(curr_hero[i].isExhausted()) {
+				if(curr_hero[i].isExhausted() && curr_hero[i].hasAttacked()) {
 					amountExhausted++;
 				}
 			}
@@ -204,7 +260,7 @@ public class LM_shr : MonoBehaviour {
 				playersTurn = false;
 			}
 		}
-
+		// END TURN BUTTON WILL SET ALL UNITS TO EXHAUSTED
 		// check if game over.
 	}
 }

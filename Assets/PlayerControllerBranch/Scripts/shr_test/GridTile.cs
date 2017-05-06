@@ -23,22 +23,25 @@ public class GridTile : MonoBehaviour {
 
 	void OnMouseDown()
 	{
-		if(type != "move"){
+		if(type == "grid"){
 			return;
 		}
+
+
 
 		clicked++;
 
 		if(clicked > 1) {
 			if(lm.CheckValid(x,y)){
-				
 				if(lm.MoveUnit(x,y)){
 					Debug.Log("Valid move!");
 				} else {
 					Debug.Log("INValid move!!");
 				}
 			} else {
-				//	ATTACK?
+				if(type == "atk") {
+					Debug.Log("can attack");
+				}
 			}
 		}
 		//TODO: check valid move / attack
