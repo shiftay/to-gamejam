@@ -6,25 +6,32 @@ public class turnSystem : MonoBehaviour {
     GameObject Level;
     GameObject[] playerUnit;
     GameObject[] enemyUnits;
+    Transform[] selectableTiles;
 
     public int turnCount = 0;
     bool isWon = false;
+    bool isSelected;
     int whosFirst;
     public enum battleState {
         start, player,
         enemy, lose, win, end
     }
+    public enum turnState
+    {
+        move, attack, end
+    }
 
-    public battleState currentState;
+    public battleState currentBattleState;
+    public turnState currentTurnState;
 
 	// Use this for initialization
 	void Start () {
-        currentState = battleState.start;
+        currentBattleState = battleState.start;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        switch(currentState)    {
+        switch(currentBattleState)    {
             case (battleState.start):
                 // Start of the battle
                 // Where the counting of turns happen
@@ -53,20 +60,58 @@ public class turnSystem : MonoBehaviour {
             if(whosFirst == 1)
             {
                 // PlayerTurn goes Here
-                currentState = battleState.player;
+                currentBattleState = battleState.player;
             }
             else
             {
                 // EnemyTurn goes Here
-                currentState = battleState.enemy;
+                currentBattleState = battleState.enemy;
             }
         }
     }
     public void playerTurn()
     {
-        if(currentState == battleState.player)
+        if(currentBattleState == battleState.player)
         {
-            if()
+            // Player move here
         }
     }
+
+    public void playerMove()
+    {
+        if (isSelected)
+        {
+            switch(currentTurnState)
+            {
+                case (turnState.move):
+                    // Move() here
+                    Move();
+                    break;
+                case (turnState.attack):
+                    // Attack() here
+                    break;
+                case (turnState.end):
+                    // moved = true 
+                    break;
+            }
+        }
+    }
+
+    public void Move()
+    {
+        if(currentTurnState == turnState.move)
+        {
+            // Selected Player Unit gains the Transform of the Selected Tile
+            OnMouseOver();
+        }
+    }
+
+    public void OnMouseOver()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            // Select the object
+        }
+    }
+
 }
