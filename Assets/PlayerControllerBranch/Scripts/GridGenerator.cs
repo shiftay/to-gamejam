@@ -30,7 +30,7 @@ public class GridGenerator : MonoBehaviour {
 		for(float i = 0; i < rows; i += 1.28f ){
 			for(float j = 0; j < columns; j += 1.28f){
 				GameObject tileHolders = Instantiate(tiles,Gameboard + new Vector3(j,i,0),Quaternion.identity);
-				tileHolders.transform.parent = GameObject.Find("Board Generator").transform;
+				tileHolders.transform.parent = GameObject.Find("Board Holder").transform;
 			}
 		}
 	}
