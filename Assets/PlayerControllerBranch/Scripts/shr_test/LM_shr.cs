@@ -14,7 +14,6 @@ public class LM_shr : MonoBehaviour {
 	public Fighter[] heroes;
 
 	public Fighter[] enemies;
-
 	bool playersTurn = true;
 	public bool PlayersTurn() { return playersTurn; }
 
@@ -25,6 +24,7 @@ public class LM_shr : MonoBehaviour {
 	public GameObject moveRange;
 	GameObject holder;
 	public int[,]  grid;
+	public int currentSelectedUnit;
 
 	// Use this for initialization
 	void Start () {
@@ -37,7 +37,6 @@ public class LM_shr : MonoBehaviour {
 		GenerateGrid();
 		CreateGrid();
 		FillFighters();
-		bool hello = true;
 		//TODO: populate heroes.
 		//TODO: populate enemies.
 		// InputControl?
@@ -83,7 +82,7 @@ public class LM_shr : MonoBehaviour {
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
 				GameObject go = Instantiate(list[grid[i,j]].tilePrefab, new Vector2(i, j), Quaternion.identity);
-				go.GetComponent<GridTile>().init(i, j, this);
+				go.GetComponent<GridTile>().init(i, j, this, "grid");
 				SetParent(holder, go);
 			}
 		}
@@ -103,38 +102,11 @@ public class LM_shr : MonoBehaviour {
 			}
 		}
 
-
-
-		// for(int r=-range; r<=range; r++) {
-		// 	for(int c=-range; c<=range;c++) {
-		// 		if(Mathf.Abs(r)+Mathf.Abs(c) == range) {
-		// 			//instantiate.
-		// 		}
-		// 	}
-		// }
-
-
-
-		// for(int k = 1; k < range; k++) {
-		// 	for(int l = 1; l < range; l++) {
-		// 		SetParent(moveRange, Instantiate(list[1].tilePrefab, new Vector2(x+l,y+k), Quaternion.identity));
-		// 		SetParent(moveRange, Instantiate(list[1].tilePrefab, new Vector2(x-l,y-k), Quaternion.identity));
-		// 		SetParent(moveRange, Instantiate(list[1].tilePrefab, new Vector2(x-l,y+k), Quaternion.identity));
-		// 		SetParent(moveRange, Instantiate(list[1].tilePrefab, new Vector2(x+l,y-k), Quaternion.identity));
-		// 	}
-		// }
-
-
-		// straight lines on x
 		for(int m = 1; m < range+1; m++) {
 			CreateMoveBlock(x+m,y);
 			CreateMoveBlock(x-m,y);
 			CreateMoveBlock(x,y+m);
 			CreateMoveBlock(x,y-m);
-			// SetParent(moveRange, Instantiate(list[1].tilePrefab, new Vector2(x+m,y), Quaternion.identity));
-			// SetParent(moveRange, Instantiate(list[1].tilePrefab, new Vector2(x-m,y), Quaternion.identity));
-			// SetParent(moveRange, Instantiate(list[1].tilePrefab, new Vector2(x,y+m), Quaternion.identity));
-			// SetParent(moveRange, Instantiate(list[1].tilePrefab, new Vector2(x,y-m), Quaternion.identity));
 		}
 
 		for (int n = 1; n <= range; n++) {	
@@ -143,17 +115,9 @@ public class LM_shr : MonoBehaviour {
 				CreateMoveBlock(x-n,y-z);
 				CreateMoveBlock(x-z,y+n);
 				CreateMoveBlock(x+z,y-n);
-				// SetParent(moveRange, Instantiate(list[1].tilePrefab, new Vector2(x+n,y+z), Quaternion.identity));
-				// SetParent(moveRange, Instantiate(list[1].tilePrefab, new Vector2(x-n,y-z), Quaternion.identity));
-				// SetParent(moveRange, Instantiate(list[1].tilePrefab, new Vector2(x-z,y+n), Quaternion.identity));
-				// SetParent(moveRange, Instantiate(list[1].tilePrefab, new Vector2(x+z,y-n), Quaternion.identity));
 			}
 		}
-		
-
-
-
-
+	
 	}
 
 	void CreateMoveBlock(int x, int y) {
@@ -162,10 +126,17 @@ public class LM_shr : MonoBehaviour {
 		}
 
 		GameObject go = Instantiate(list[1].tilePrefab, new Vector2(x, y), Quaternion.identity);
-		go.GetComponent<GridTile>().init(x, y, this);
+		go.GetComponent<GridTile>().init(x, y, this, "move");
 		SetParent(moveRange, go);
 	}
 
+	public void DeleteMovement() {
+		List<GameObject> children = new List<GameObject>();
+		foreach(Transform child in moveRange.transform) {
+			children.Add(child.gameObject);
+		}
+		children.ForEach(child => Destroy(child));
+	}
 
 	// Update is called once per frame
 	void Update () {

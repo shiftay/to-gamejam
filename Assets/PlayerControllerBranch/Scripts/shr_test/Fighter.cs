@@ -25,6 +25,7 @@ public class Fighter : MonoBehaviour {
 	
 		if(selected && !showingMovement) {
 			//TODO: show possible movements;
+			holder.currentSelectedUnit = uniqueID;
 			holder.GatherMovement(holder.grid, uniqueID, 3);
 			showingMovement = true;
 		}
@@ -33,16 +34,11 @@ public class Fighter : MonoBehaviour {
 
 	void OnMouseDown()	{	
 		selected = !selected;
+
 		if(showingMovement) {
-			List<GameObject> children = new List<GameObject>();
-			foreach(Transform child in holder.moveRange.transform) {
-				children.Add(child.gameObject);
-			}
-			children.ForEach(child => Destroy(child));
+			holder.DeleteMovement();
 			showingMovement = !showingMovement;
 		}
-
-
 	}
 	// void OnMouseUp() {	selected = false;	}
 }
