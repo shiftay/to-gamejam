@@ -8,6 +8,12 @@ public class LM_shr : MonoBehaviour {
 		public int type;
 		public GameObject tilePrefab;
 	}
+
+	public struct currentSelectedUnit {
+		public int x;
+		public int y;
+		public GameObject fighter;	
+	}
 	const int PLAYERID = 300;
 	const int ENEMYID = 560;
 
@@ -24,7 +30,7 @@ public class LM_shr : MonoBehaviour {
 	public GameObject moveRange;
 	GameObject holder;
 	public int[,]  grid;
-	public int currentSelectedUnit;
+	public currentSelectedUnit curr_Unit;
 
 	// Use this for initialization
 	void Start () {
@@ -53,13 +59,13 @@ public class LM_shr : MonoBehaviour {
 		for(int i = 0; i < heroes.Length; i++){
 			int x = Random.Range(0,5);
 			int y = Random.Range(0,5);
-			Instantiate(heroes[i], new Vector3(x, y, -1), Quaternion.identity).setOwnership("player", PLAYERID + i, this);
+			Instantiate(heroes[i], new Vector3(x, y, -1), Quaternion.identity).setOwnership("player", PLAYERID + i, this, x, y);
 			grid[x,y] = PLAYERID + i;
 		}
 		for(int j = 0; j < enemies.Length; j++){
 			int x = Random.Range(0,5);
 			int y = Random.Range(0,5);
-			Instantiate(enemies[j], new Vector3(x, y, -1), Quaternion.identity).setOwnership("enemy", ENEMYID + j, this);
+			Instantiate(enemies[j], new Vector3(x, y, -1), Quaternion.identity).setOwnership("enemy", ENEMYID + j, this, x, y);
 			grid[x,y] = ENEMYID + j;
 		}
 	}
@@ -118,6 +124,23 @@ public class LM_shr : MonoBehaviour {
 			}
 		}
 	
+	}
+
+	// already checked if valid movement
+	public void MoveUnit(int x, int y) {
+		grid[curr_Unit.fighter.GetComponent<Fighter>().Curr_pos().x,curr_Unit.fighter.GetComponent<Fighter>().Curr_pos().y] = 0;
+		grid[x,y] = curr_Unit.fighter.GetComponent<Fighter>().UID();
+		curr_Unit.fighter.transform.position = new Vector3(x, y, -1);
+		DeleteMovement();
+	}
+
+
+	public bool CheckValid(int x, int y) {
+		if(grid[x,y] > 0){
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	void CreateMoveBlock(int x, int y) {
