@@ -8,6 +8,7 @@ public class HUDManager : MonoBehaviour
 	public GameObject Options;
 	public GameObject Shop;
 	public GameObject Roster;
+	public GameObject Mission;
 	public Image Popup;
 	public GameObject Back;
 	public GameObject AnimText;
@@ -18,6 +19,7 @@ public class HUDManager : MonoBehaviour
 	public Slider SoundSlider;
 	public GameObject Exit;
 	public GameObject ShopText;
+	public GameObject UnitText;
 	//public Image[] Rosters;
 	private GameManager gm;
 
@@ -44,6 +46,7 @@ public class HUDManager : MonoBehaviour
 		SoundSlider.gameObject.SetActive(false);
 		Exit.SetActive(false);
 		ShopText.SetActive(false);
+		UnitText.SetActive(false);
 		// Rosters[0].enabled = false;
 		// Rosters[1].enabled = false;
 		// Rosters[2].enabled = false;
@@ -52,9 +55,23 @@ public class HUDManager : MonoBehaviour
 		// Rosters[5].enabled = false;
 	}
 
+	public void onMission()
+	{
+		//While this is active, hide other buttons
+		Roster.SetActive(false);
+		Shop.SetActive(false);
+		Options.SetActive(false);
+
+		//When pressed activate mission stuff
+		Popup.enabled = true;
+		Back.SetActive(true);
+		UnitText.SetActive(true);	
+	}
+
 	public void onRoster()
 	{
 		//While this is active, hide other buttons
+		Mission.SetActive(false);
 		Shop.SetActive(false);
 		Options.SetActive(false);
 
@@ -72,6 +89,7 @@ public class HUDManager : MonoBehaviour
 	public void onShop()
 	{
 		//While this is active, hide other buttons
+		Mission.SetActive(false);
 		Roster.SetActive(false);
 		Options.SetActive(false);
 
@@ -84,6 +102,7 @@ public class HUDManager : MonoBehaviour
 	public void onOptions()
 	{	
 		//While this is active, hide other buttons
+		Mission.SetActive(false);
 		Roster.SetActive(false);
 		Shop.SetActive(false);
 
@@ -103,6 +122,13 @@ public class HUDManager : MonoBehaviour
 	{
 		Back.SetActive(false);
 		Popup.enabled = false;
+
+		//MISSION SELECT STUFF
+		UnitText.SetActive(false);
+		Mission.SetActive(true);
+		Roster.SetActive(true);
+		Shop.SetActive(true);
+		Options.SetActive(true);
 
 		//ROSTER STUFF
 		// Rosters[0].enabled = false;
