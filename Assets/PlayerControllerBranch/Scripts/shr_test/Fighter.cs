@@ -25,7 +25,7 @@ public class Fighter : MonoBehaviour {
 	
 		if(selected && !showingMovement) {
 			//TODO: show possible movements;
-			holder.GatherMovement(holder.grid, uniqueID, 4);
+			holder.GatherMovement(holder.grid, uniqueID, 3);
 			showingMovement = true;
 		}
 	}
