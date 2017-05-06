@@ -194,7 +194,7 @@ public class LM_shr : MonoBehaviour {
 		grid[x,y] = curr_hero[selectedUnit].UID();
 		curr_hero[selectedUnit].setExhausted(true);
 		// curr_hero[selectedUnit].setSelected(false);
-		curr_Unit.fighter.transform.position = new Vector3(x, y, -1);
+		curr_Unit.fighter.transform.position = new Vector3(x, y, -2);
 		DeleteMovement();
 		DeleteATK();
 		GatherATKRange(curr_hero[selectedUnit].UID(), curr_hero[selectedUnit].getStats().atkrange); // change to range through fighter.
@@ -313,7 +313,11 @@ public class LM_shr : MonoBehaviour {
 				heroesDead++;
 			}
 		}
-
+		
+		
+		//TODO turn on GameOver elements
+		//	set bool, so game over only runs once.
+		//  apply anything to game manager as needed.w
 		if(enemiesDead == curr_enemy.Count){
 			Debug.Log("Player wins!");
 		}

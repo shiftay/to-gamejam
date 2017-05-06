@@ -87,7 +87,8 @@ public class Fighter : MonoBehaviour {
 		if(exhausted && attacked){
 			return;
 		}
-	
+		// holder.DeleteATK();
+		// holder.DeleteMovement();
 		//TODO: add UI stuff.
 		if(showingAttack) {
 			holder.DeleteATK();
