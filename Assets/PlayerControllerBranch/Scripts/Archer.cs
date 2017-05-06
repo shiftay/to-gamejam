@@ -7,6 +7,7 @@ public class Archer : MonoBehaviour {
 	public int magicPoints;
 	public int speed;
 	public bool currentUnit;
+	public bool turnDone;
 	public GameObject[]otherUnits;
 	
 	void Awake(){
@@ -14,6 +15,7 @@ public class Archer : MonoBehaviour {
 		magicPoints = 50;
 		speed = 1;
 		currentUnit = false;
+		turnDone = false;
 	}
 	
 	// Update is called once per frame
@@ -26,10 +28,12 @@ public class Archer : MonoBehaviour {
 	}
 	void OnMouseDown(){
 
-		for(int i = 0; i < 1; i++){
-			otherUnits[0].GetComponent<Knight>().currentUnit = false;
-		}
-		currentUnit = true;
+		// for(int i = 0; i < 1; i++){
+		// 	otherUnits[0].GetComponent<Knight>().currentUnit = false;
+		// }
+		// currentUnit = true;
+
+
 	}
 
 	void isSelected(){
