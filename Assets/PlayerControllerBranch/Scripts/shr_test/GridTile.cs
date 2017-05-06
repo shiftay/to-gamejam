@@ -19,9 +19,6 @@ public class GridTile : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		// if(x > lm.width || x < 0 || y < 0 || y > lm.height){
-		// 	Destroy(this.gameObject);
-		// }
 	}
 
 	void OnMouseDown()
@@ -34,8 +31,12 @@ public class GridTile : MonoBehaviour {
 
 		if(clicked > 1) {
 			if(lm.CheckValid(x,y)){
-				Debug.Log("Valid move!");
-				lm.MoveUnit(x,y);
+				
+				if(lm.MoveUnit(x,y)){
+					Debug.Log("Valid move!");
+				} else {
+					Debug.Log("INValid move!!");
+				}
 			} else {
 				//	ATTACK?
 			}

@@ -8,10 +8,11 @@ public class Fighter : MonoBehaviour {
 		public int x;
 		public int y;
 	}
-	bool doneMovement;
 	bool selected = false;
 	bool showingMovement = false;
 	string ownership;
+	int health;
+	int damage;
 	
 	int uniqueID;
 	public int UID() { return uniqueID; }
@@ -19,6 +20,10 @@ public class Fighter : MonoBehaviour {
 	current_position curr_pos;
 	public current_position Curr_pos() { return curr_pos; }
 
+	bool exhausted = false;
+	public bool isExhausted() { return exhausted; }
+	public void setExhausted(bool value) { exhausted = value; }
+	public void setSelected(bool value) { selected = value; }
 	//TODO: ADD STATS FROM UNITROSTER BASED OFF OF NAME OR W/E
 	
 	// Update is called once per frame
@@ -31,9 +36,10 @@ public class Fighter : MonoBehaviour {
 		if(holder.PlayersTurn() && ownership == "player") {
 			if(selected && !showingMovement) {
 				//TODO: show possible movements;
-				holder.curr_Unit.x = curr_pos.x;
-				holder.curr_Unit.y = curr_pos.y;
-				holder.curr_Unit.fighter = this.gameObject;
+				// holder.curr_Unit.x = curr_pos.x;
+				// holder.curr_Unit.y = curr_pos.y;
+				// holder.curr_Unit.fighter = this.gameObject;
+				holder.setCurrUnit(curr_pos.x, curr_pos.y, this.gameObject, uniqueID);
 				holder.GatherMovement(holder.grid, uniqueID, 3);
 				showingMovement = true;
 			}
@@ -42,6 +48,9 @@ public class Fighter : MonoBehaviour {
 
 
 	void OnMouseDown()	{	
+		if(exhausted){
+			return;
+		}
 		selected = !selected;
 		//TODO: add UI stuff.
 		if(showingMovement) {
@@ -55,6 +64,13 @@ public class Fighter : MonoBehaviour {
 		holder = lm; 
 		curr_pos.x = x;
 		curr_pos.y = y;
+		if(id < 500) {
+			health = 20;
+			damage = 10;
+		} else {
+			health = 10;
+			damage = 5;
+		}
 	}
 	// void OnMouseUp() {	selected = false;	}
 }

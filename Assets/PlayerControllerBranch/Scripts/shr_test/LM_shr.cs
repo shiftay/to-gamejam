@@ -12,11 +12,13 @@ public class LM_shr : MonoBehaviour {
 	public struct currentSelectedUnit {
 		public int x;
 		public int y;
-		public GameObject fighter;	
+		public GameObject fighter;
+		public int uniqueID;	
 	}
 	const int PLAYERID = 300;
 	const int ENEMYID = 560;
 
+	public List<Fighter> curr_hero = new List<Fighter>();
 	public Fighter[] heroes;
 
 	public Fighter[] enemies;
@@ -30,7 +32,7 @@ public class LM_shr : MonoBehaviour {
 	public GameObject moveRange;
 	GameObject holder;
 	public int[,]  grid;
-	public currentSelectedUnit curr_Unit;
+	public currentSelectedUnit curr_Unit; // can be made private.
 
 	// Use this for initialization
 	void Start () {
@@ -49,6 +51,12 @@ public class LM_shr : MonoBehaviour {
 	}
 	
 
+	public void setCurrUnit(int x, int y, GameObject fighter, int UID) {
+		curr_Unit.x = x;
+		curr_Unit.y = y;
+		curr_Unit.fighter = fighter;
+		curr_Unit.uniqueID = UID;
+	}
 	void FillFighters() {
 		//TODO: fill from current_mission on gm; rather than through inspector
 
@@ -59,12 +67,14 @@ public class LM_shr : MonoBehaviour {
 		for(int i = 0; i < heroes.Length; i++){
 			int x = Random.Range(0,5);
 			int y = Random.Range(0,5);
-			Instantiate(heroes[i], new Vector3(x, y, -1), Quaternion.identity).setOwnership("player", PLAYERID + i, this, x, y);
+			curr_hero.Add(Instantiate(heroes[i], new Vector3(x, y, -1), Quaternion.identity));
+			curr_hero[i].setOwnership("player", PLAYERID + i, this, x, y);
 			grid[x,y] = PLAYERID + i;
 		}
 		for(int j = 0; j < enemies.Length; j++){
 			int x = Random.Range(0,5);
 			int y = Random.Range(0,5);
+			// change to hero setup.
 			Instantiate(enemies[j], new Vector3(x, y, -1), Quaternion.identity).setOwnership("enemy", ENEMYID + j, this, x, y);
 			grid[x,y] = ENEMYID + j;
 		}
@@ -127,11 +137,28 @@ public class LM_shr : MonoBehaviour {
 	}
 
 	// already checked if valid movement
-	public void MoveUnit(int x, int y) {
-		grid[curr_Unit.fighter.GetComponent<Fighter>().Curr_pos().x,curr_Unit.fighter.GetComponent<Fighter>().Curr_pos().y] = 0;
-		grid[x,y] = curr_Unit.fighter.GetComponent<Fighter>().UID();
+	public bool MoveUnit(int x, int y) {
+		int selectedUnit = 0;
+		for(int i = 0; i < curr_hero.Count; i++) {
+			if(curr_hero[i].UID() == curr_Unit.uniqueID){
+				selectedUnit = i;
+				break;
+			}
+		}
+		if(curr_hero[selectedUnit].isExhausted()) {
+			return false;
+		}
+
+
+		// int test = curr_Unit.fighter.GetComponent<Fighter>().Curr_pos().x;
+		// int test_2 = curr_hero[selectedUnit].Curr_pos().x;
+		grid[curr_hero[selectedUnit].Curr_pos().x, curr_hero[selectedUnit].Curr_pos().y] = 0;
+		grid[x,y] = curr_hero[selectedUnit].UID();
+		curr_hero[selectedUnit].setExhausted(true);
+		curr_hero[selectedUnit].setSelected(false);
 		curr_Unit.fighter.transform.position = new Vector3(x, y, -1);
 		DeleteMovement();
+		return true;
 	}
 
 
@@ -163,6 +190,21 @@ public class LM_shr : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+		if(playersTurn) {
+			int amountExhausted = 0;
+			for(int i = 0; i < curr_hero.Count; i++) {
+				if(curr_hero[i].isExhausted()) {
+					amountExhausted++;
+				}
+			}
+
+			if(amountExhausted == curr_hero.Count) {
+				Debug.Log("playersTurn is over");
+				playersTurn = false;
+			}
+		}
+
 		// check if game over.
 	}
 }
