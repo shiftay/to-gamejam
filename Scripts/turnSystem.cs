@@ -6,7 +6,7 @@ public class turnSystem : MonoBehaviour {
     GameObject Level;
     GameObject[] playerUnit;
     GameObject[] enemyUnits;
-    Transform[] selectableTiles;
+    public Transform[] selectableTiles;
 
     public int turnCount = 0;
     bool isWon = false;
@@ -75,43 +75,44 @@ public class turnSystem : MonoBehaviour {
         {
             // Player move here
         }
+        
     }
 
-    public void playerMove()
-    {
-        if (isSelected)
-        {
-            switch(currentTurnState)
-            {
-                case (turnState.move):
-                    // Move() here
-                    Move();
-                    break;
-                case (turnState.attack):
-                    // Attack() here
-                    break;
-                case (turnState.end):
-                    // moved = true 
-                    break;
-            }
-        }
-    }
+    //public void playerMove()
+    //{
+    //    if (isSelected)
+    //    {
+    //        switch(currentTurnState)
+    //        {
+    //            case (turnState.move):
+    //                // Move() here
+    //                Move();
+    //                break;
+    //            case (turnState.attack):
+    //                // Attack() here
+    //                break;
+    //            case (turnState.end):
+    //                // moved = true 
+    //                break;
+    //        }
+    //    }
+    //}
 
-    public void Move()
-    {
-        if(currentTurnState == turnState.move)
-        {
-            // Selected Player Unit gains the Transform of the Selected Tile
-            OnMouseOver();
-        }
-    }
+    //  public void Move()
+    //  {
+    //      if(currentTurnState == turnState.move)
+    //      {
+    //          // Selected Player Unit gains the Transform of the Selected Tile
+    //          OnMouseOver();
+    //    }
+    //}
 
-    public void OnMouseOver()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            // Select the object
-        }
-    }
+    //public void OnMouseOver()
+    //{
+    //    if (Input.GetMouseButtonDown(0))
+    //    {
+    //        // Select the object
+    //    }
+    //}
 
 }
