@@ -38,12 +38,7 @@ public class GridTile : MonoBehaviour {
 				} else {
 					Debug.Log("INValid move!!");
 				}
-			} else {
-				if(type == "atk") {
-					Debug.Log("can attack");
-					lm.ProcessAttack(x,y);
-				}
-			}
+			} 
 		}
 		//TODO: check valid move / attack
 		//		update grid if is

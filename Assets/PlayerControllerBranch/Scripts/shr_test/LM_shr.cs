@@ -224,36 +224,25 @@ public class LM_shr : MonoBehaviour {
 		return true;
 	}
 
-	public void ProcessAttack(int x, int y) {
+	public void ProcessAttack(Fighter beingAtkd) {
 		if(playersTurn) {
-			//player attack.
-			int selectedHero = 0;
-			int selectedEnemy = 0;
-			int enemyToAtk = grid[x,y];
-			
 
-			for(int i = 0; i < curr_hero.Count; i++) {
-				if(curr_hero[i].UID() == curr_Unit.uniqueID){
-					selectedHero = i;
-					break;
-				}
+
+			if(curr_Unit.fight_sel.hasAttacked()){
+				return;
 			}
 
-
-			for(int j = 0; j < curr_enemy.Count; j++) {
-				if(curr_enemy[j].UID() == enemyToAtk) {
-					selectedEnemy = j;
-				}
-			}
-
-			Debug.Log("HEALTH:" + curr_enemy[selectedEnemy].getStats().health);
-			curr_enemy[selectedEnemy].TakeDamage(curr_hero[selectedHero].getStats().damage);
-			Debug.Log("HEALTH:" + curr_enemy[selectedEnemy].getStats().health);
+			Debug.Log("HEALTH:" + beingAtkd.getStats().health);
+			beingAtkd.TakeDamage(curr_Unit.fight_sel.getStats().damage);
+			Debug.Log("HEALTH:" + beingAtkd.getStats().health);
 			
 			//TODO Animations
-			curr_hero[selectedHero].setAttacked(true);
+			curr_Unit.fight_sel.setAttacked(true);
 			DeleteATK();
-
+			if(!curr_Unit.fight_sel.isExhausted()){
+				DeleteMovement();
+				curr_Unit.fight_sel.setExhausted(true);
+			}
 		}
 	}
 
@@ -300,7 +289,26 @@ public class LM_shr : MonoBehaviour {
 		}
 		children.ForEach(child => Destroy(child));
 	}
+	public bool ValidAttack(int x, int y) {
+		bool canAttack = false;
 
+		// TODO: This enemy is within range of currently selectedUnit
+		List<GridTile> children = new List<GridTile>();
+		foreach(Transform child in atkRange.transform) {
+			children.Add(child.GetComponent<GridTile>());
+		}
+
+		for(int i = 0; i < children.Count; i++) {
+			if(children[i].x == x && children[i].y == y) {
+				canAttack = true;
+				break;
+			}
+		}
+
+
+
+		return canAttack;
+	}
 	// Update is called once per frame
 	void Update () {
 

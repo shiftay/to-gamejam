@@ -44,6 +44,10 @@ public class Fighter : MonoBehaviour {
 	void Start()
 	{
 		transform.rotation = Quaternion.Euler(0,90,90);
+		if(ownership == "enemy"){
+			this.gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
+		}
+		
 	}
 
 
@@ -69,6 +73,9 @@ public class Fighter : MonoBehaviour {
 			return;
 		}
 		if(ownership != "player"){
+			if(holder.ValidAttack(curr_pos.x, curr_pos.y)) {
+				holder.ProcessAttack(this);
+			}
 			return;
 		}
 
