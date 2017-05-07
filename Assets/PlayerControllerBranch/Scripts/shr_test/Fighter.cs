@@ -16,8 +16,8 @@ public class Fighter : MonoBehaviour {
 		public int atkrange;
 	}
 	bool selected = false;
-	bool showingMovement = false;
-	bool showingAttack = false;
+	// bool showingMovement = false;
+	// bool showingAttack = false;
 	string ownership;
 	
 
@@ -37,39 +37,20 @@ public class Fighter : MonoBehaviour {
 	public bool hasAttacked() { return attacked; }
 	public void setAttacked(bool value) { attacked = value; }
 	public void setSelected(bool value) { selected = value; }
+	public bool isSelected() { return selected; }
 	//TODO: ADD STATS FROM UNITROSTER BASED OFF OF NAME OR W/E
 	
+
+	void Start()
+	{
+		transform.rotation = Quaternion.Euler(0,90,90);
+	}
+
+
 	// Update is called once per frame
 	void Update () {
 	
 		if(alive){
-			if(!holder.PlayersTurn() && selected) {
-				selected = false;
-				return;
-			}
-
-			if(holder.PlayersTurn() && ownership == "player") {
-				if(!exhausted) {
-					if(selected && !showingMovement) {
-						//TODO: show possible movements;
-						// holder.curr_Unit.x = curr_pos.x;
-						// holder.curr_Unit.y = curr_pos.y;
-						// holder.curr_Unit.fighter = this.gameObject;
-						holder.setCurrUnit(curr_pos.x, curr_pos.y, this.gameObject, uniqueID);
-						holder.GatherMovement(uniqueID, m_stats.movespeed);
-						holder.GatherATKRange(uniqueID, m_stats.atkrange);
-						showingMovement = true;
-						showingAttack = true;
-					}
-				} else if (!attacked) {
-					if(selected && !showingAttack) {
-						holder.setCurrUnit(curr_pos.x, curr_pos.y, this.gameObject, uniqueID);
-						holder.GatherATKRange(uniqueID, m_stats.atkrange);
-						showingAttack = true;
-					}
-				}
-			}
-			// DIE
 			if(m_stats.health <= 0) {
 				m_stats.health = 0;
 				alive = false;
@@ -77,7 +58,7 @@ public class Fighter : MonoBehaviour {
 
 
 		} else {
-			//TODO IF DEAD TURN OFF, DO NOT DELETE.
+			//need bool so doesnt run over and over again bogging shit down.
 			gameObject.SetActive(false);
 		}
 	}
@@ -87,19 +68,12 @@ public class Fighter : MonoBehaviour {
 		if(exhausted && attacked){
 			return;
 		}
-		// holder.DeleteATK();
-		// holder.DeleteMovement();
-		//TODO: add UI stuff.
-		if(showingAttack) {
-			holder.DeleteATK();
-			showingAttack = !showingAttack;
-		}
-		if(showingMovement) {
-			holder.DeleteMovement();
-			showingMovement = !showingMovement;
+		if(ownership != "player"){
+			return;
 		}
 
 		selected = !selected;
+		holder.setCurrUnit(this, this.gameObject);
 	}
 	public void setOwnership(string value, int id, LM_shr lm, int x, int y) {
 		ownership = value;

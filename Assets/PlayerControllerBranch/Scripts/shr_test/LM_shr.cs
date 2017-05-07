@@ -12,7 +12,8 @@ public class LM_shr : MonoBehaviour {
 	public struct currentSelectedUnit {
 		public int x;
 		public int y;
-		public GameObject fighter;
+		public GameObject go_sel;
+		public Fighter fight_sel;
 		public int uniqueID;	
 	}
 	const int PLAYERID = 300;
@@ -35,6 +36,8 @@ public class LM_shr : MonoBehaviour {
 	public GameObject atkRange;
 	public int[,]  grid;
 	public currentSelectedUnit curr_Unit; // can be made private.
+	public bool showingMR = false;
+	public bool showingAR = false;
 
 	// Use this for initialization
 	void Start () {
@@ -55,11 +58,30 @@ public class LM_shr : MonoBehaviour {
 	}
 	
 
-	public void setCurrUnit(int x, int y, GameObject fighter, int UID) {
-		curr_Unit.x = x;
-		curr_Unit.y = y;
-		curr_Unit.fighter = fighter;
-		curr_Unit.uniqueID = UID;
+	public void setCurrUnit(Fighter selectUnit, GameObject fighter) {
+		if(curr_Unit.fight_sel){
+			curr_Unit.fight_sel.setSelected(false);
+		}
+		
+		curr_Unit.x = selectUnit.Curr_pos().x;
+		curr_Unit.y = selectUnit.Curr_pos().y;
+		curr_Unit.go_sel = fighter;
+		curr_Unit.fight_sel = selectUnit;
+		curr_Unit.uniqueID = selectUnit.UID();
+		// delete current ranges if applicable. might cause error?
+		DeleteATK();
+		DeleteMovement();
+		if(!selectUnit.isSelected()) {
+			return;
+		}
+
+
+
+		if(!selectUnit.isExhausted()){
+			GatherMovement(selectUnit.UID(), selectUnit.getStats().movespeed);
+		}
+		
+		GatherATKRange(selectUnit.UID(), selectUnit.getStats().atkrange);
 	}
 	void FillFighters() {
 		//TODO: fill from current_mission on gm; rather than through inspector
@@ -113,7 +135,7 @@ public class LM_shr : MonoBehaviour {
 	public void GatherMovement(int UID, int range) {
 		int x = width;
 		int y = height;
-
+		// Find Origin / CenterPoint
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
 				if(grid[i,j] == UID){
@@ -123,6 +145,7 @@ public class LM_shr : MonoBehaviour {
 			}
 		}
 
+		// Makes the diamond
 		for(int m = 1; m < range+1; m++) {
 			CreateBlock(x+m,y,1,"move");
 			CreateBlock(x-m,y,1,"move");
@@ -194,7 +217,7 @@ public class LM_shr : MonoBehaviour {
 		grid[x,y] = curr_hero[selectedUnit].UID();
 		curr_hero[selectedUnit].setExhausted(true);
 		// curr_hero[selectedUnit].setSelected(false);
-		curr_Unit.fighter.transform.position = new Vector3(x, y, -2);
+		curr_Unit.go_sel.transform.position = new Vector3(x, y, -2);
 		DeleteMovement();
 		DeleteATK();
 		GatherATKRange(curr_hero[selectedUnit].UID(), curr_hero[selectedUnit].getStats().atkrange); // change to range through fighter.
