@@ -22,7 +22,6 @@ public class LM_shr : MonoBehaviour {
 	public List<Fighter> curr_hero = new List<Fighter>();
 	public List<Fighter> curr_enemy = new List<Fighter>();
 	public Fighter[] heroes;
-
 	public Fighter[] enemies;
 	bool playersTurn = true;
 	public bool PlayersTurn() { return playersTurn; }
@@ -59,9 +58,15 @@ public class LM_shr : MonoBehaviour {
 	
 
 	public void setCurrUnit(Fighter selectUnit, GameObject fighter) {
-		if(curr_Unit.fight_sel){
-			curr_Unit.fight_sel.setSelected(false);
+		// if(curr_Unit.fight_sel){
+		// 	curr_Unit.fight_sel.setSelected(false);
+		// }
+		if(curr_Unit.fight_sel && curr_Unit.fight_sel.isSelected()) {
+			if(curr_Unit.go_sel != fighter) {
+				curr_Unit.fight_sel.setSelected(false);
+			}
 		}
+		//TODO: Edge case where the last one selected is still selected.
 		
 		curr_Unit.x = selectUnit.Curr_pos().x;
 		curr_Unit.y = selectUnit.Curr_pos().y;
@@ -71,11 +76,10 @@ public class LM_shr : MonoBehaviour {
 		// delete current ranges if applicable. might cause error?
 		DeleteATK();
 		DeleteMovement();
+		
 		if(!selectUnit.isSelected()) {
 			return;
 		}
-
-
 
 		if(!selectUnit.isExhausted()){
 			GatherMovement(selectUnit.UID(), selectUnit.getStats().movespeed);
@@ -210,9 +214,6 @@ public class LM_shr : MonoBehaviour {
 			return false;
 		}
 
-
-		// int test = curr_Unit.fighter.GetComponent<Fighter>().Curr_pos().x;
-		// int test_2 = curr_hero[selectedUnit].Curr_pos().x;
 		grid[curr_hero[selectedUnit].Curr_pos().x, curr_hero[selectedUnit].Curr_pos().y] = 0;
 		grid[x,y] = curr_hero[selectedUnit].UID();
 		curr_hero[selectedUnit].setExhausted(true);

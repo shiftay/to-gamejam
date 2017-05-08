@@ -72,6 +72,7 @@ public class Fighter : MonoBehaviour {
 		if(exhausted && attacked){
 			return;
 		}
+
 		if(ownership != "player"){
 			if(holder.ValidAttack(curr_pos.x, curr_pos.y)) {
 				holder.ProcessAttack(this);
@@ -80,6 +81,7 @@ public class Fighter : MonoBehaviour {
 		}
 
 		selected = !selected;
+
 		holder.setCurrUnit(this, this.gameObject);
 	}
 	public void setOwnership(string value, int id, LM_shr lm, int x, int y) {
