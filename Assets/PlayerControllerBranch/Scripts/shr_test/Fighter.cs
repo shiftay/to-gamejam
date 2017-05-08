@@ -19,8 +19,6 @@ public class Fighter : MonoBehaviour {
 	// bool showingMovement = false;
 	// bool showingAttack = false;
 	string ownership;
-	
-
 	int uniqueID;
 	public int UID() { return uniqueID; }
 	LM_shr holder;
@@ -47,26 +45,21 @@ public class Fighter : MonoBehaviour {
 		if(ownership == "enemy"){
 			this.gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
 		}
-		
 	}
 
 
 	// Update is called once per frame
 	void Update () {
-	
 		if(alive){
 			if(m_stats.health <= 0) {
 				m_stats.health = 0;
 				alive = false;
 			}
-
-
 		} else {
 			//need bool so doesnt run over and over again bogging shit down.
 			gameObject.SetActive(false);
 		}
 	}
-
 
 	void OnMouseDown()	{	
 		if(exhausted && attacked){
