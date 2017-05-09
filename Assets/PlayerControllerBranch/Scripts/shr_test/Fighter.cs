@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Fighter : MonoBehaviour {
-
+	[System.SerializableAttribute]
 	public struct current_position {
 		public int x;
 		public int y;
@@ -16,8 +16,6 @@ public class Fighter : MonoBehaviour {
 		public int atkrange;
 	}
 	bool selected = false;
-	// bool showingMovement = false;
-	// bool showingAttack = false;
 	string ownership;
 	int uniqueID;
 	public int UID() { return uniqueID; }
@@ -37,7 +35,8 @@ public class Fighter : MonoBehaviour {
 	public void setSelected(bool value) { selected = value; }
 	public bool isSelected() { return selected; }
 	//TODO: ADD STATS FROM UNITROSTER BASED OFF OF NAME OR W/E
-	
+	int amtClicked = 0;
+	public void setAmtClicked(int value) { amtClicked = value; }
 
 	void Start()
 	{
@@ -46,7 +45,6 @@ public class Fighter : MonoBehaviour {
 			this.gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
 		}
 	}
-
 
 	// Update is called once per frame
 	void Update () {
@@ -66,9 +64,15 @@ public class Fighter : MonoBehaviour {
 			return;
 		}
 
+		if(holder.curr_Unit.go_sel && ownership == "enemy") {
+			amtClicked++;
+		}
+		
 		if(ownership != "player"){
-			if(holder.ValidAttack(curr_pos.x, curr_pos.y)) {
-				holder.ProcessAttack(this);
+			if(amtClicked >= 2) {
+				if(holder.ValidAttack(curr_pos.x, curr_pos.y)) {
+					holder.ProcessAttack(this);
+				}
 			}
 			return;
 		}
@@ -99,5 +103,4 @@ public class Fighter : MonoBehaviour {
 	public void TakeDamage(int damage) {
 		m_stats.health -= damage;
 	}
-	// void OnMouseUp() {	selected = false;	}
 }

@@ -27,8 +27,6 @@ public class GridTile : MonoBehaviour {
 			return;
 		}
 
-
-
 		clicked++;
 
 		if(clicked > 1) {
@@ -40,8 +38,5 @@ public class GridTile : MonoBehaviour {
 				}
 			} 
 		}
-		//TODO: check valid move / attack
-		//		update grid if is
-		//		move unit
 	}
 }

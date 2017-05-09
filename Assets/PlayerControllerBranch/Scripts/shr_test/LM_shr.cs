@@ -25,7 +25,7 @@ public class LM_shr : MonoBehaviour {
 	public Fighter[] enemies;
 	bool playersTurn = true;
 	public bool PlayersTurn() { return playersTurn; }
-
+	
 	public int width = 10;
 	public int height = 10;
 
@@ -37,7 +37,11 @@ public class LM_shr : MonoBehaviour {
 	public currentSelectedUnit curr_Unit; // can be made private.
 	public bool showingMR = false;
 	public bool showingAR = false;
-
+	const int MAX_POOL = 50;
+	List<GameObject> poolMoveRange = new List<GameObject>();
+	List<GameObject> poolAttackRange = new List<GameObject>();
+	private static int lastUsedIndex = 0;
+	bool gameover = false;
 	// Use this for initialization
 	void Start () {
 		// instance = this;
@@ -48,6 +52,18 @@ public class LM_shr : MonoBehaviour {
 		atkRange = new GameObject();
 		atkRange.name = "atkRange";
 		// Instantiate(holder);
+
+		
+		for(int i = 0; i < MAX_POOL; i++) {
+			poolAttackRange.Add(crtBlock(i+100, i+100, 2,"atk"));
+		}
+
+		for(int i = 0; i < MAX_POOL; i++) {
+			poolMoveRange.Add(crtBlock(i+100, i+100, 1, "move"));
+		}
+
+
+
 		GenerateGrid();
 		CreateGrid();
 		FillFighters();
@@ -58,15 +74,12 @@ public class LM_shr : MonoBehaviour {
 	
 
 	public void setCurrUnit(Fighter selectUnit, GameObject fighter) {
-		// if(curr_Unit.fight_sel){
-		// 	curr_Unit.fight_sel.setSelected(false);
-		// }
+
 		if(curr_Unit.fight_sel && curr_Unit.fight_sel.isSelected()) {
 			if(curr_Unit.go_sel != fighter) {
 				curr_Unit.fight_sel.setSelected(false);
 			}
 		}
-		//TODO: Edge case where the last one selected is still selected.
 		
 		curr_Unit.x = selectUnit.Curr_pos().x;
 		curr_Unit.y = selectUnit.Curr_pos().y;
@@ -81,11 +94,19 @@ public class LM_shr : MonoBehaviour {
 			return;
 		}
 
+		ClearEnemySelection();
+
 		if(!selectUnit.isExhausted()){
 			GatherMovement(selectUnit.UID(), selectUnit.getStats().movespeed);
 		}
 		
 		GatherATKRange(selectUnit.UID(), selectUnit.getStats().atkrange);
+	}
+
+	void ClearEnemySelection() {
+		foreach(Fighter go in curr_enemy) {
+			go.setAmtClicked(0);
+		}
 	}
 	void FillFighters() {
 		//TODO: fill from current_mission on gm; rather than through inspector
@@ -137,6 +158,7 @@ public class LM_shr : MonoBehaviour {
 
 
 	public void GatherMovement(int UID, int range) {
+		lastUsedIndex = 0;
 		int x = width;
 		int y = height;
 		// Find Origin / CenterPoint
@@ -151,18 +173,20 @@ public class LM_shr : MonoBehaviour {
 
 		// Makes the diamond
 		for(int m = 1; m < range+1; m++) {
-			CreateBlock(x+m,y,1,"move");
-			CreateBlock(x-m,y,1,"move");
-			CreateBlock(x,y+m,1,"move");
-			CreateBlock(x,y-m,1,"move");
+			MoveMRange(x+m,y, poolMoveRange[lastUsedIndex]);
+			MoveMRange(x-m,y, poolMoveRange[lastUsedIndex+1]);
+			MoveMRange(x,y+m, poolMoveRange[lastUsedIndex+2]);
+			MoveMRange(x,y-m, poolMoveRange[lastUsedIndex+3]);
+			lastUsedIndex += 4;
 		}
 
 		for (int n = 1; n <= range; n++) {	
 			for(int z = -range+n; z < range-n; z++) {
-				CreateBlock(x+n,y+z,1,"move");
-				CreateBlock(x-n,y-z,1,"move");
-				CreateBlock(x-z,y+n,1,"move");
-				CreateBlock(x+z,y-n,1,"move");
+				MoveMRange(x+n,y+z, poolMoveRange[lastUsedIndex]);
+				MoveMRange(x-n,y-z, poolMoveRange[lastUsedIndex+1]);
+				MoveMRange(x-z,y+n, poolMoveRange[lastUsedIndex+2]);
+				MoveMRange(x+z,y-n, poolMoveRange[lastUsedIndex+3]);
+				lastUsedIndex += 4;
 			}
 		}
 	
@@ -170,9 +194,10 @@ public class LM_shr : MonoBehaviour {
 
 
 	public void GatherATKRange(int UID, int range) {
+		//TODO: Create a pool of blocks.
 		int x = width;
 		int y = height;
-
+		lastUsedIndex = 0;
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++) {
 				if(grid[i,j] == UID){
@@ -183,18 +208,24 @@ public class LM_shr : MonoBehaviour {
 		}
 
 		for(int m = 1; m < range+1; m++) {
-			CreateBlock(x+m,y,2,"atk");
-			CreateBlock(x-m,y,2,"atk");
-			CreateBlock(x,y+m,2,"atk");
-			CreateBlock(x,y-m,2,"atk");
+			MoveATK(x+m,y, poolAttackRange[lastUsedIndex]);
+			MoveATK(x-m,y, poolAttackRange[lastUsedIndex+1]);
+			MoveATK(x,y+m, poolAttackRange[lastUsedIndex+2]);
+			MoveATK(x,y-m, poolAttackRange[lastUsedIndex+3]);
+			lastUsedIndex += 4;
 		}
 
 		for (int n = 1; n <= range; n++) {	
 			for(int z = -range+n; z < range-n; z++) {
-				CreateBlock(x+n,y+z,2,"atk");
-				CreateBlock(x-n,y-z,2,"atk");
-				CreateBlock(x-z,y+n,2,"atk");
-				CreateBlock(x+z,y-n,2,"atk");
+				MoveATK(x+n,y+z, poolAttackRange[lastUsedIndex]);
+				MoveATK(x-n,y-z, poolAttackRange[lastUsedIndex+1]);
+				MoveATK(x-z,y+n, poolAttackRange[lastUsedIndex+2]);
+				MoveATK(x+z,y-n, poolAttackRange[lastUsedIndex+3]);
+				lastUsedIndex += 4;
+				// CreateBlock(x+n,y+z,2,"atk");
+				// CreateBlock(x-n,y-z,2,"atk");
+				// CreateBlock(x-z,y+n,2,"atk");
+				// CreateBlock(x+z,y-n,2,"atk");
 			}
 		}
 	}
@@ -203,25 +234,27 @@ public class LM_shr : MonoBehaviour {
 
 	// already checked if valid movement
 	public bool MoveUnit(int x, int y) {
-		int selectedUnit = 0;
-		for(int i = 0; i < curr_hero.Count; i++) {
-			if(curr_hero[i].UID() == curr_Unit.uniqueID){
-				selectedUnit = i;
-				break;
-			}
-		}
-		if(curr_hero[selectedUnit].isExhausted()) {
+		//TODO: change to curr_Unit
+		// int selectedUnit = 0;
+		// for(int i = 0; i < curr_hero.Count; i++) {
+		// 	if(curr_hero[i].UID() == curr_Unit.uniqueID){
+		// 		selectedUnit = i;
+		// 		break;
+		// 	}
+		// }
+		if(curr_Unit.fight_sel.isExhausted()) {
 			return false;
 		}
 
-		grid[curr_hero[selectedUnit].Curr_pos().x, curr_hero[selectedUnit].Curr_pos().y] = 0;
-		grid[x,y] = curr_hero[selectedUnit].UID();
-		curr_hero[selectedUnit].setExhausted(true);
+		grid[curr_Unit.fight_sel.Curr_pos().x, curr_Unit.fight_sel.Curr_pos().y] = 0;
+		grid[x,y] = curr_Unit.fight_sel.UID();
+		curr_Unit.fight_sel.setExhausted(true);
 		// curr_hero[selectedUnit].setSelected(false);
 		curr_Unit.go_sel.transform.position = new Vector3(x, y, -2);
 		DeleteMovement();
 		DeleteATK();
-		GatherATKRange(curr_hero[selectedUnit].UID(), curr_hero[selectedUnit].getStats().atkrange); // change to range through fighter.
+		ClearEnemySelection();
+		GatherATKRange(curr_Unit.fight_sel.UID(), curr_Unit.fight_sel.getStats().atkrange); 
 		return true;
 	}
 
@@ -255,6 +288,53 @@ public class LM_shr : MonoBehaviour {
 		}
 	}
 
+	void MoveATK(int x, int y, GameObject go) {
+		if(x > width || x < 0 || y < 0 || y > height){
+			return;
+		}
+
+		go.transform.position = new Vector3(x, y, -1);
+		//TODO: fix this.
+		go.GetComponent<GridTile>().init(x, y, this, "atk");
+	}
+
+	void MoveMRange(int x, int y, GameObject go) {
+		if(x > width || x < 0 || y < 0 || y > height){
+			return;
+		}
+
+		go.transform.position = new Vector3(x, y, 0);
+		//TODO: fix this.
+		go.GetComponent<GridTile>().init(x, y, this, "move");
+	}
+
+
+
+	GameObject crtBlock(int x, int y, int type, string tileType) {
+		int tile = 0;
+		switch(tileType) {
+			case "atk":
+				tile = -1;
+				break;
+			case "move":
+				tile = 0;
+				break;
+		}
+
+		GameObject go = Instantiate(list[type].tilePrefab, new Vector3(x, y, tile), Quaternion.identity);
+		if(tileType == "atk"){
+			SetParent(atkRange, go);
+		} else {
+			SetParent(moveRange, go);
+		}
+
+		return go;
+	}
+
+
+
+
+
 	void CreateBlock(int x, int y, int type, string tileType) {
 		if(x > width || x < 0 || y < 0 || y > height){
 			return;
@@ -280,7 +360,7 @@ public class LM_shr : MonoBehaviour {
 		foreach(Transform child in moveRange.transform) {
 			children.Add(child.gameObject);
 		}
-		children.ForEach(child => Destroy(child));
+		children.ForEach(child => child.transform.position = new Vector3(1000,1000,0));
 	}
 
 	public void DeleteATK() {
@@ -288,7 +368,7 @@ public class LM_shr : MonoBehaviour {
 		foreach(Transform child in atkRange.transform) {
 			children.Add(child.gameObject);
 		}
-		children.ForEach(child => Destroy(child));
+		children.ForEach(child => child.transform.position = new Vector3(1000,1000,0));
 	}
 	public bool ValidAttack(int x, int y) {
 		bool canAttack = false;
@@ -306,30 +386,29 @@ public class LM_shr : MonoBehaviour {
 			}
 		}
 
-
-
 		return canAttack;
 	}
 	// Update is called once per frame
 	void Update () {
+		if(!gameover) {
+			if(playersTurn) {
+				int amountExhausted = 0;
+				for(int i = 0; i < curr_hero.Count; i++) {
+					if(curr_hero[i].isExhausted() && curr_hero[i].hasAttacked()) {
+						amountExhausted++;
+					}
+				}
 
-		if(playersTurn) {
-			int amountExhausted = 0;
-			for(int i = 0; i < curr_hero.Count; i++) {
-				if(curr_hero[i].isExhausted() && curr_hero[i].hasAttacked()) {
-					amountExhausted++;
+				if(amountExhausted == curr_hero.Count) {
+					Debug.Log("playersTurn is over");
+					playersTurn = false;
 				}
 			}
-
-			if(amountExhausted == curr_hero.Count) {
-				Debug.Log("playersTurn is over");
-				playersTurn = false;
-			}
-		}
 		// SURRENDER ENDS GAME
 		// END TURN BUTTON WILL SET ALL UNITS TO EXHAUSTED
 		// check if game over.
-		CheckGameOver();
+			CheckGameOver();
+		}
 	}
 
 	void CheckGameOver() {
@@ -348,14 +427,15 @@ public class LM_shr : MonoBehaviour {
 		
 		
 		//TODO turn on GameOver elements
-		//	set bool, so game over only runs once.
 		//  apply anything to game manager as needed.w
 		if(enemiesDead == curr_enemy.Count){
 			Debug.Log("Player wins!");
+			gameover = true;
 		}
 
 		if(heroesDead == curr_hero.Count){
 			Debug.Log("Enemy wins!");
+			gameover = true;
 		}
 
 	}
